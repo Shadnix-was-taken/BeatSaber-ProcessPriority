@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BeatSaberMarkupLanguage.Settings;
 using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
+using System.Diagnostics;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
@@ -24,38 +26,34 @@ namespace ProcessPriority
         /// [Init] methods that use a Constructor or called before regular methods like InitWithConfig.
         /// Only use [Init] with one Constructor.
         /// </summary>
-        public void Init(IPALogger logger)
+        public void Init(IPALogger logger, Config conf)
         {
             Instance = this;
             Log = logger;
+            Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             Log.Info("ProcessPriority initialized.");
         }
-
-        #region BSIPA Config
-        //Uncomment to use BSIPA's config
-        /*
-        [Init]
-        public void InitWithConfig(Config conf)
-        {
-            Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            Log.Debug("Config loaded");
-        }
-        */
-        #endregion
 
         [OnStart]
         public void OnApplicationStart()
         {
-            Log.Debug("OnApplicationStart");
-            new GameObject("ProcessPriorityController").AddComponent<ProcessPriorityController>();
-
+            BSMLSettings.instance.AddSettingsMenu("ProcessPriority", "ProcessPriority.UI.SettingsUI.bsml", UI.SettingsUI.instance);
+            SetProcessPriority();
         }
 
         [OnExit]
         public void OnApplicationQuit()
         {
-            Log.Debug("OnApplicationQuit");
+            Configuration.PluginConfig.Instance.Changed();
+        }
 
+        internal void SetProcessPriority()
+        {
+            Process gp = Process.GetCurrentProcess();
+            Log.Info("Aquired process is " + gp.ProcessName + " with ID " + gp.Id.ToString());
+
+            gp.PriorityClass = Configuration.PluginConfig.Instance.ProcessPriority;
+            Log.Info("Set process priority to " + Configuration.PluginConfig.Instance.ProcessPriority.ToString());
         }
     }
 }

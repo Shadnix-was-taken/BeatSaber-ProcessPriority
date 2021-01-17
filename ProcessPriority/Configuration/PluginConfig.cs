@@ -1,6 +1,8 @@
-﻿/*
+﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
+using IPA.Config.Stores.Attributes;
+using IPA.Config.Stores.Converters;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace ProcessPriority.Configuration
@@ -8,7 +10,9 @@ namespace ProcessPriority.Configuration
     internal class PluginConfig
     {
         public static PluginConfig Instance { get; set; }
-        public virtual int IntValue { get; set; } = 42; // Must be 'virtual' if you want BSIPA to detect a value change and save the config automatically.
+
+        [UseConverter(typeof(CaseInsensitiveEnumConverter<ProcessPriorityClass>))]
+        public virtual ProcessPriorityClass ProcessPriority { get; set; } = ProcessPriorityClass.Normal;
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
@@ -23,7 +27,7 @@ namespace ProcessPriority.Configuration
         /// </summary>
         public virtual void Changed()
         {
-            // Do stuff when the config is changed.
+            Plugin.Instance.SetProcessPriority();
         }
 
         /// <summary>
@@ -35,4 +39,3 @@ namespace ProcessPriority.Configuration
         }
     }
 }
-*/

@@ -1,0 +1,7 @@
+﻿<settings-container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd">
+  <horizontal pref-width='90'>
+    <text text='Process Priority Settings' font-size='5' align='Center'/>
+  </horizontal>
+  
+  <dropdown-list-setting text="Process Priority:" value="priorityChoice" options="priorityChoices"/>
+</settings-container>
