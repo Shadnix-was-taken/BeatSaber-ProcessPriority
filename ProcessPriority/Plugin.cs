@@ -52,8 +52,15 @@ namespace ProcessPriority
             Process gp = Process.GetCurrentProcess();
             Log.Info("Aquired process is " + gp.ProcessName + " with ID " + gp.Id.ToString());
 
-            gp.PriorityClass = Configuration.PluginConfig.Instance.ProcessPriority;
-            Log.Info("Set process priority to " + Configuration.PluginConfig.Instance.ProcessPriority.ToString());
+            try
+            {
+                gp.PriorityClass = Configuration.PluginConfig.Instance.ProcessPriority;
+                Log.Info("Set process priority to " + Configuration.PluginConfig.Instance.ProcessPriority.ToString());
+            }
+            catch (Exception ex)
+            {
+                Log.Info("Unable to set priority. The config probably hasn't loaded yet.");
+            }
         }
     }
 }
